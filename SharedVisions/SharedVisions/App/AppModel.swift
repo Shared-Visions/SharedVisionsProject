@@ -18,4 +18,5 @@ class AppModel {
         case open
     }
     var immersiveSpaceState = ImmersiveSpaceState.closed
+    var progressiveSpaceRange: ImmersionStyle = .progressive(0.4...0.8, initialAmount: 1.0, aspectRatio: .landscape)
 }
