@@ -13,19 +13,25 @@ struct SharedVisionsApp: App {
     @State private var appModel = AppModel()
 
     var body: some Scene {
-        WindowGroup {
+        WindowGroup (id: appModel.mainWindowID){
             ContentView()
                 .environment(appModel)
+                .onAppear {
+                    appModel.mainWindowState = .open
+                }
+                .onDisappear {
+                    appModel.mainWindowState = .closed
+                }
         }
 
-        ImmersiveSpace(id: appModel.immersiveSpaceID) {
+        ImmersiveSpace(id: appModel.mainStorySpaceID) {
             ImmersiveView()
                 .environment(appModel)
                 .onAppear {
-                    appModel.immersiveSpaceState = .open
+                    appModel.mainStorySpaceState = .open
                 }
                 .onDisappear {
-                    appModel.immersiveSpaceState = .closed
+                    appModel.mainStorySpaceState = .closed
                 }
         }
         .immersionStyle(selection: $appModel.progressiveSpaceRange, in: .progressive)

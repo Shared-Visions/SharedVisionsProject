@@ -11,12 +11,25 @@ import SwiftUI
 @MainActor
 @Observable
 class AppModel {
-    let immersiveSpaceID = "ImmersiveSpace"
+
+    // MARK: Scene Management State
+    var mainWindowID = "MainWindow"
+    var mainStorySpaceID = "MainStorySpace"
+
+    enum WindowState {
+        case closed
+        case open
+    }
+
     enum ImmersiveSpaceState {
         case closed
         case inTransition
         case open
     }
-    var immersiveSpaceState = ImmersiveSpaceState.closed
+
+    var mainWindowState = WindowState.closed
+    var mainStorySpaceState = ImmersiveSpaceState.closed
     var progressiveSpaceRange: ImmersionStyle = .progressive(0.4...0.8, initialAmount: 1.0, aspectRatio: .landscape)
+
+    // MARK: TBD
 }
