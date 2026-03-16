@@ -17,14 +17,14 @@ struct SharedVisionsApp: App {
         // Provides the entrance to the main story experience.
         // Provides access to the content library.
         WindowGroup (id: appModel.mainWindowID){
-            ContentView()
-                .environment(appModel)
-                .onAppear {
-                    appModel.mainWindowState = .open
-                }
-                .onDisappear {
-                    appModel.mainWindowState = .closed
-                }
+            MainTabView()
+            .environment(appModel)
+            .onAppear {
+                appModel.mainWindowState = .open
+            }
+            .onDisappear {
+                appModel.mainWindowState = .closed
+            }
         }
         .defaultLaunchBehavior(.presented)
         .restorationBehavior(.disabled)
