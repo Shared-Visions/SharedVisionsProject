@@ -23,9 +23,6 @@ struct ContentView: View {
             ToggleImmersiveSpaceButton()
         }
         .padding()
-        .ornament(attachmentAnchor: .scene(.bottomTrailing), ornament: {
-            ToggleDebugWindowButton()
-        })
     }
 }
 

@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct MainTabView: View {
+
+    @Environment(AppModel.self) private var appModel
+
     var body: some View {
         TabView {
             Tab("Home", systemImage: "house") {
@@ -20,6 +23,13 @@ struct MainTabView: View {
                 AboutView()
             }
         }
+        .ornament(attachmentAnchor: .scene(.bottomTrailing), ornament: {
+            if(appModel.useDebugMode) {
+                ToggleDebugWindowButton()
+            } else {
+                EmptyView()
+            }
+        })
     }
 }
 
