@@ -23,6 +23,7 @@ struct ContentView: View {
 //            Text("Main Window State \(appModel.mainWindowState)")
 //            Text("Main Story Space \(appModel.mainStorySpaceState)")
 
+            ToggleDebugWindowButton()
 
             ToggleImmersiveSpaceButton()
         }

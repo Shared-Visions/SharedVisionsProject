@@ -13,6 +13,9 @@ struct SharedVisionsApp: App {
     @State private var appModel = AppModel()
 
     var body: some Scene {
+        // The main window that users will see when they launch the app
+        // Provides the entrance to the main story experience.
+        // Provides access to the content library.
         WindowGroup (id: appModel.mainWindowID){
             ContentView()
                 .environment(appModel)
@@ -24,8 +27,9 @@ struct SharedVisionsApp: App {
                 }
         }
 
+        // A utility window for development only
         WindowGroup (id: appModel.debugWindowID){
-            ContentView()
+            DebugView()
                 .environment(appModel)
                 .onAppear {
                     appModel.debugWindowState = .open
@@ -38,8 +42,7 @@ struct SharedVisionsApp: App {
             return WindowPlacement(.utilityPanel)
         }
 
-
-
+        // An immersive space for the main story
         ImmersiveSpace(id: appModel.mainStorySpaceID) {
             ImmersiveView()
                 .environment(appModel)
