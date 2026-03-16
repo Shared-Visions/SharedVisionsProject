@@ -20,14 +20,13 @@ struct ContentView: View {
 
             Text("Shared Visions")
 
-//            Text("Main Window State \(appModel.mainWindowState)")
-//            Text("Main Story Space \(appModel.mainStorySpaceState)")
-
-            ToggleDebugWindowButton()
 
             ToggleImmersiveSpaceButton()
         }
         .padding()
+        .ornament(attachmentAnchor: .scene(.bottomTrailing), ornament: {
+            ToggleDebugWindowButton()
+        })
     }
 }
 

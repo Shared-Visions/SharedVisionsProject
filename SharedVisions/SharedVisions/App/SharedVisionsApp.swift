@@ -38,6 +38,7 @@ struct SharedVisionsApp: App {
                     appModel.debugWindowState = .closed
                 }
         }
+        .defaultSize(width: 600, height: 400)
         .defaultWindowPlacement { _, context in
             return WindowPlacement(.utilityPanel)
         }

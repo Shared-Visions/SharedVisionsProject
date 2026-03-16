@@ -24,7 +24,7 @@ struct ToggleDebugWindowButton: View {
                     openWindow(id: appModel.debugWindowID)
             }
         } label: {
-            Text(appModel.debugWindowState == .open ? "Hide Debug Window" : "Show Debug Window")
+            Image(systemName: appModel.debugWindowState == .open ? "ladybug" : "ladybug.fill")
         }
         .fontWeight(.semibold)
     }

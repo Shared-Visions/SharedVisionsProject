@@ -12,6 +12,9 @@ import SwiftUI
 @Observable
 class AppModel {
 
+    // TODO: We need a way to turn this off by default, but enable it when needed
+    var useDebugMode = true
+
     // MARK: Scene Management State
     var mainWindowID = "MainWindow"
     var mainStorySpaceID = "MainStorySpace"

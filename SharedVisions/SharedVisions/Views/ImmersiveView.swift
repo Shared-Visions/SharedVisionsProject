@@ -10,16 +10,23 @@ import RealityKit
 import RealityKitContent
 
 struct ImmersiveView: View {
+    @Environment(AppModel.self) private var appModel
 
     var body: some View {
         RealityView { content in
             // Add the initial RealityKit content
-            if let immersiveContentEntity = try? await Entity(named: "Immersive", in: realityKitContentBundle) {
-                content.add(immersiveContentEntity)
+            guard let scene = try? await Entity(named: "Immersive", in: realityKitContentBundle) else { return }
+            content.add(scene)
 
-                // Put skybox here.  See example in World project available at
-                // https://developer.apple.com/
+            if(appModel.useDebugMode) {
+                let debug = Entity()
+                debug.position = SIMD3<Float>(0.75, 0.25, -1.25)
+                let attachment = ViewAttachmentComponent(rootView: ToggleDebugWindowButton())
+                debug.components.set(attachment)
+                debug.components.set(BillboardComponent())
+                scene.addChild(debug)
             }
+
         }
     }
 }
