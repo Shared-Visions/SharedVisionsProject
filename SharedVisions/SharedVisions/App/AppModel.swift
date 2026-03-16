@@ -15,6 +15,7 @@ class AppModel {
     // MARK: Scene Management State
     var mainWindowID = "MainWindow"
     var mainStorySpaceID = "MainStorySpace"
+    var debugWindowID = "DebugWindow"
 
     enum WindowState {
         case closed
@@ -30,6 +31,7 @@ class AppModel {
     var mainWindowState = WindowState.closed
     var mainStorySpaceState = ImmersiveSpaceState.closed
     var progressiveSpaceRange: ImmersionStyle = .progressive(0.4...0.8, initialAmount: 1.0, aspectRatio: .landscape)
+    var debugWindowState: WindowState = .closed
 
     // MARK: TBD
 }

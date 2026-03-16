@@ -24,6 +24,22 @@ struct SharedVisionsApp: App {
                 }
         }
 
+        WindowGroup (id: appModel.debugWindowID){
+            ContentView()
+                .environment(appModel)
+                .onAppear {
+                    appModel.debugWindowState = .open
+                }
+                .onDisappear {
+                    appModel.debugWindowState = .closed
+                }
+        }
+        .defaultWindowPlacement { _, context in
+            return WindowPlacement(.utilityPanel)
+        }
+
+
+
         ImmersiveSpace(id: appModel.mainStorySpaceID) {
             ImmersiveView()
                 .environment(appModel)
