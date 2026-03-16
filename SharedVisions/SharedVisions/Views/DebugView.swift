@@ -13,10 +13,11 @@ struct DebugView: View {
         VStack {
             Text("Debug View (development only)")
 
+            Divider()
             Text("Main Window State: \(String(describing: appModel.mainWindowState))")
-            Text("Main Story Space: \(String(describing: appModel.mainStorySpaceState))")
-
             ToggleMainWindowButton()
+            Divider()
+            Text("Main Story Space: \(String(describing: appModel.mainStorySpaceState))")
             ToggleImmersiveSpaceButton()
         }
     }

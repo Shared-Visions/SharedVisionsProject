@@ -26,6 +26,8 @@ struct SharedVisionsApp: App {
                     appModel.mainWindowState = .closed
                 }
         }
+        .defaultLaunchBehavior(.presented)
+        .restorationBehavior(.disabled)
 
         // A utility window for development only
         WindowGroup (id: appModel.debugWindowID){
@@ -42,6 +44,8 @@ struct SharedVisionsApp: App {
         .defaultWindowPlacement { _, context in
             return WindowPlacement(.utilityPanel)
         }
+        .defaultLaunchBehavior(.suppressed)
+        .restorationBehavior(.disabled)
 
         // An immersive space for the main story
         ImmersiveSpace(id: appModel.mainStorySpaceID) {
@@ -55,5 +59,6 @@ struct SharedVisionsApp: App {
                 }
         }
         .immersionStyle(selection: $appModel.progressiveSpaceRange, in: .progressive)
+        .defaultLaunchBehavior(.suppressed)
     }
 }
