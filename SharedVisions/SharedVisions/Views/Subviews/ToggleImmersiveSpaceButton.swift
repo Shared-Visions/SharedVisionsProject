@@ -17,17 +17,17 @@ struct ToggleImmersiveSpaceButton: View {
     var body: some View {
         Button {
             Task { @MainActor in
-                switch appModel.immersiveSpaceState {
+                switch appModel.mainStorySpaceState {
                     case .open:
-                        appModel.immersiveSpaceState = .inTransition
+                        appModel.mainStorySpaceState = .inTransition
                         await dismissImmersiveSpace()
                         // Don't set immersiveSpaceState to .closed because there
                         // are multiple paths to ImmersiveView.onDisappear().
                         // Only set .closed in ImmersiveView.onDisappear().
 
                     case .closed:
-                        appModel.immersiveSpaceState = .inTransition
-                        switch await openImmersiveSpace(id: appModel.immersiveSpaceID) {
+                        appModel.mainStorySpaceState = .inTransition
+                        switch await openImmersiveSpace(id: appModel.mainStorySpaceID) {
                             case .opened:
                                 // Don't set immersiveSpaceState to .open because there
                                 // may be multiple paths to ImmersiveView.onAppear().
@@ -40,7 +40,7 @@ struct ToggleImmersiveSpaceButton: View {
                                 fallthrough
                             @unknown default:
                                 // On unknown response, assume space did not open.
-                                appModel.immersiveSpaceState = .closed
+                                appModel.mainStorySpaceState = .closed
                         }
 
                     case .inTransition:
@@ -49,9 +49,9 @@ struct ToggleImmersiveSpaceButton: View {
                 }
             }
         } label: {
-            Text(appModel.immersiveSpaceState == .open ? "Hide Immersive Space" : "Show Immersive Space")
+            Text(appModel.mainStorySpaceState == .open ? "Hide Immersive Space" : "Show Immersive Space")
         }
-        .disabled(appModel.immersiveSpaceState == .inTransition)
+        .disabled(appModel.mainStorySpaceState == .inTransition)
         .animation(.none, value: 0)
         .fontWeight(.semibold)
     }

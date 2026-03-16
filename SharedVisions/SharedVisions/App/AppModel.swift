@@ -11,11 +11,30 @@ import SwiftUI
 @MainActor
 @Observable
 class AppModel {
-    let immersiveSpaceID = "ImmersiveSpace"
+
+    // TODO: We need a way to turn this off by default, but enable it when needed
+    var useDebugMode = true
+
+    // MARK: Scene Management State
+    var mainWindowID = "MainWindow"
+    var mainStorySpaceID = "MainStorySpace"
+    var debugWindowID = "DebugWindow"
+
+    enum WindowState {
+        case closed
+        case open
+    }
+
     enum ImmersiveSpaceState {
         case closed
         case inTransition
         case open
     }
-    var immersiveSpaceState = ImmersiveSpaceState.closed
+
+    var mainWindowState = WindowState.closed
+    var mainStorySpaceState = ImmersiveSpaceState.closed
+    var progressiveSpaceRange: ImmersionStyle = .progressive(0.4...1.0, initialAmount: 1.0, aspectRatio: .landscape)
+    var debugWindowState: WindowState = .closed
+
+    // MARK: TBD
 }

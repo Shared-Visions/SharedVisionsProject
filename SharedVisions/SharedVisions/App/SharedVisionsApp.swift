@@ -13,21 +13,52 @@ struct SharedVisionsApp: App {
     @State private var appModel = AppModel()
 
     var body: some Scene {
-        WindowGroup {
-            ContentView()
-                .environment(appModel)
+        // The main window that users will see when they launch the app
+        // Provides the entrance to the main story experience.
+        // Provides access to the content library.
+        WindowGroup (id: appModel.mainWindowID){
+            MainTabView()
+            .environment(appModel)
+            .onAppear {
+                appModel.mainWindowState = .open
+            }
+            .onDisappear {
+                appModel.mainWindowState = .closed
+            }
         }
+        .defaultLaunchBehavior(.presented)
+        .restorationBehavior(.disabled)
 
-        ImmersiveSpace(id: appModel.immersiveSpaceID) {
+        // A utility window for development only
+        WindowGroup (id: appModel.debugWindowID){
+            DebugView()
+                .environment(appModel)
+                .onAppear {
+                    appModel.debugWindowState = .open
+                }
+                .onDisappear {
+                    appModel.debugWindowState = .closed
+                }
+        }
+        .defaultSize(width: 600, height: 400)
+        .defaultWindowPlacement { _, context in
+            return WindowPlacement(.utilityPanel)
+        }
+        .defaultLaunchBehavior(.suppressed)
+        .restorationBehavior(.disabled)
+
+        // An immersive space for the main story
+        ImmersiveSpace(id: appModel.mainStorySpaceID) {
             ImmersiveView()
                 .environment(appModel)
                 .onAppear {
-                    appModel.immersiveSpaceState = .open
+                    appModel.mainStorySpaceState = .open
                 }
                 .onDisappear {
-                    appModel.immersiveSpaceState = .closed
+                    appModel.mainStorySpaceState = .closed
                 }
         }
-        .immersionStyle(selection: .constant(.full), in: .full)
+        .immersionStyle(selection: $appModel.progressiveSpaceRange, in: .progressive)
+        .defaultLaunchBehavior(.suppressed)
     }
 }
