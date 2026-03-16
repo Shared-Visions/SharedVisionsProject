@@ -33,7 +33,7 @@ class AppModel {
 
     var mainWindowState = WindowState.closed
     var mainStorySpaceState = ImmersiveSpaceState.closed
-    var progressiveSpaceRange: ImmersionStyle = .progressive(0.4...0.8, initialAmount: 1.0, aspectRatio: .landscape)
+    var progressiveSpaceRange: ImmersionStyle = .progressive(0.4...1.0, initialAmount: 1.0, aspectRatio: .landscape)
     var debugWindowState: WindowState = .closed
 
     // MARK: TBD

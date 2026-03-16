@@ -30,3 +30,4 @@ struct ContentView: View {
     ContentView()
         .environment(AppModel())
 }
+
