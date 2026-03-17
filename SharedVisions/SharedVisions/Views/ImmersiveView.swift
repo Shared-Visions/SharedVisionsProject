@@ -141,7 +141,7 @@ struct ImmersiveView: View {
             timing: .easeIn,
             isAdditive: false
         )
-        let moveDuration: TimeInterval = 0.25
+        let moveDuration: TimeInterval = 0.3
 
         // Phase 2: Settle back from overshoot to final position
         let settleAction = FromToByAction<Transform>(
@@ -150,7 +150,7 @@ struct ImmersiveView: View {
             timing: .easeOut,
             isAdditive: false
         )
-        let settleDuration: TimeInterval = 0.15
+        let settleDuration: TimeInterval = 0.1
 
         guard let moveAnimation = try? AnimationResource.makeActionAnimation(
             for: moveAction,
