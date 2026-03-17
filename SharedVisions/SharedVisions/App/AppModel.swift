@@ -36,5 +36,6 @@ class AppModel {
     var progressiveSpaceRange: ImmersionStyle = .progressive(0.4...1.0, initialAmount: 1.0, aspectRatio: .landscape)
     var debugWindowState: WindowState = .closed
 
-    // MARK: TBD
+    // MARK: Immersive Content
+    var sphereCount: Int = 24
 }

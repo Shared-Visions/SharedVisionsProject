@@ -29,15 +29,8 @@ struct ImmersiveView: View {
 
             if let glassSphere = scene.findEntity(named: "GlassSphere"), let pointLight = scene.findEntity(named: "PointLight") {
                 self.pointLight = pointLight
-                // Predefined positions in front of the user (x: left/right, y: height, z: depth)
-                let positions: [SIMD3<Float>] = [
-                    SIMD3<Float>(-0.4, 1.2, -1.5),
-                    SIMD3<Float>( 0.3, 1.6, -1.8),
-                    SIMD3<Float>(-0.1, 1.0, -1.3),
-                    SIMD3<Float>( 0.5, 1.4, -2.0),
-                    SIMD3<Float>(-0.6, 1.7, -1.6),
-                ]
 
+                let positions = Self.generateSpherePositions(count: appModel.sphereCount)
                 for position in positions {
                     let clone = glassSphere.clone(recursive: true)
                     clone.position = position
@@ -57,6 +50,55 @@ struct ImmersiveView: View {
         }
     }
 
+    /// Generates positions for glass spheres distributed in a frustum region
+    /// around and beyond a video player that sits ~2m in front of the user.
+    ///
+    /// The user is at the origin facing -Z. A narrow inner cone (the video player zone)
+    /// is excluded. Spheres are placed in the wider surrounding cone from ~2m out to ~8m.
+    static func generateSpherePositions(count: Int) -> [SIMD3<Float>] {
+        // Seeded RNG so positions are stable across launches
+        var rng = SplitMix64(seed: 42)
+
+        let minDepth: Float = 1.5   // some spheres can be close, just not in the exclusion zone
+        let maxDepth: Float = 8.0
+        let videoPlayerDepth: Float = 2.0 // where the video player sits
+        let innerHalfAngle: Float = 15 * (.pi / 180) // narrow cone to exclude (user -> video player)
+        let outerHalfAngle: Float = 60 * (.pi / 180) // wide placement cone
+        let minY: Float = 0.3
+        let maxY: Float = 3.5
+
+        var positions: [SIMD3<Float>] = []
+
+        while positions.count < count {
+            // Random depth (square root bias for uniform area distribution)
+            let t = Float.random(in: 0...1, using: &rng)
+            let depth = minDepth + (maxDepth - minDepth) * sqrtf(t)
+
+            // Width of the outer cone at this depth
+            let outerWidth = depth * tan(outerHalfAngle)
+
+            // Random X position within the outer cone
+            let x = Float.random(in: -outerWidth...outerWidth, using: &rng)
+
+            // Only exclude the narrow inner cone in FRONT of the video player (depth < 2m).
+            // Beyond the video player, the full width is fair game.
+            if depth < videoPlayerDepth {
+                let innerWidth = depth * tan(innerHalfAngle)
+                if abs(x) < innerWidth {
+                    continue
+                }
+            }
+
+            // Random Y with some variation
+            let y = Float.random(in: minY...maxY, using: &rng)
+
+            // Depth is negative Z (in front of user)
+            positions.append(SIMD3<Float>(x, y, -depth))
+        }
+
+        return positions
+    }
+
     var tapExample: some Gesture {
         TapGesture()
             .targetedToAnyEntity()
@@ -73,3 +115,21 @@ struct ImmersiveView: View {
     ImmersiveView()
         .environment(AppModel())
 }
+/// A simple deterministic random number generator (SplitMix64).
+/// Produces the same sequence of values for a given seed.
+struct SplitMix64: RandomNumberGenerator {
+    private var state: UInt64
+
+    init(seed: UInt64) {
+        state = seed
+    }
+
+    mutating func next() -> UInt64 {
+        state &+= 0x9e3779b97f4a7c15
+        var z = state
+        z = (z ^ (z >> 30)) &* 0xbf58476d1ce4e5b9
+        z = (z ^ (z >> 27)) &* 0x94d049bb133111eb
+        return z ^ (z >> 31)
+    }
+}
+
