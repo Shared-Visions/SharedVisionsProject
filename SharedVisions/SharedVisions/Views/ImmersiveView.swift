@@ -8,12 +8,12 @@
 import SwiftUI
 import RealityKit
 import RealityKitContent
-
 struct ImmersiveView: View {
     @Environment(AppModel.self) private var appModel
 
     @State var debug = Entity()
     @State var pointLight: Entity?
+    @State var sceneRoot: Entity?
 
     var body: some View {
         RealityView { content in
@@ -29,6 +29,7 @@ struct ImmersiveView: View {
 
             if let glassSphere = scene.findEntity(named: "GlassSphere"), let pointLight = scene.findEntity(named: "PointLight") {
                 self.pointLight = pointLight
+                self.sceneRoot = scene
 
                 let positions = Self.generateSpherePositions(count: appModel.sphereCount)
                 for position in positions {
@@ -103,16 +104,87 @@ struct ImmersiveView: View {
         TapGesture()
             .targetedToAnyEntity()
             .onEnded { value in
-                if let pointLight = self.pointLight {
+                if let pointLight = self.pointLight, let sceneRoot = self.sceneRoot {
+                    let startPosition = pointLight.position
                     let targetPosition = value.entity.position
-                    Self.animateLightMove(pointLight, to: targetPosition)
+
+                    // Create the beam trail from start to target
+                    let beam = Self.makeBeamTrail(from: startPosition, to: targetPosition)
+                    sceneRoot.addChild(beam)
+
+                    // Animate the light movement
+                    let totalDuration = Self.animateLightMove(pointLight, to: targetPosition)
+
+                    // Fade out the beam over the animation duration, then remove it
+                    Self.fadeAndRemoveBeam(beam, duration: totalDuration)
                 }
             }
     }
 
+    /// Creates a glowing beam entity (thin cylinder) stretching from one position to another.
+    /// The beam uses an additive unlit material for a warm laser-like glow.
+    static func makeBeamTrail(from start: SIMD3<Float>, to end: SIMD3<Float>) -> Entity {
+        let direction = end - start
+        let distance = length(direction)
+
+        // Create a thin cylinder along the Y-axis, then orient it
+        let beamRadius: Float = 0.004
+        let mesh = MeshResource.generateCylinder(height: distance, radius: beamRadius)
+
+        // Warm orange-gold glow matching the point light
+        var material = UnlitMaterial(color: .init(red: 1.0, green: 0.55, blue: 0.15, alpha: 0.9))
+        material.blending = .transparent(opacity: .init(floatLiteral: 0.9))
+
+        let beam = Entity()
+        beam.components.set(ModelComponent(mesh: mesh, materials: [material]))
+        beam.components.set(OpacityComponent(opacity: 1.0))
+
+        // Position at the midpoint between start and end
+        let midpoint = (start + end) / 2.0
+        beam.position = midpoint
+
+        // Orient the cylinder (default Y-axis) to point along the direction vector
+        if distance > 0.001 {
+            let up = SIMD3<Float>(0, 1, 0)
+            let normalizedDir = normalize(direction)
+            beam.orientation = simd_quatf(from: up, to: normalizedDir)
+        }
+
+        return beam
+    }
+
+    /// Fades out a beam entity over the given duration, then removes it from the scene.
+    static func fadeAndRemoveBeam(_ beam: Entity, duration: TimeInterval) {
+        let fadeAction = FromToByAction<Float>(
+            from: 1.0,
+            to: 0.0,
+            timing: .easeOut,
+            isAdditive: false
+        )
+
+        guard let fadeAnimation = try? AnimationResource.makeActionAnimation(
+            for: fadeAction,
+            duration: duration,
+            bindTarget: .opacity
+        ) else {
+            beam.removeFromParent()
+            return
+        }
+
+        beam.playAnimation(fadeAnimation)
+
+        // Remove the beam entity after the fade completes
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(Int(duration * 1000) + 50))
+            beam.removeFromParent()
+        }
+    }
+
     /// Animates the point light from its current position to the target with a bounce at the end.
     /// Uses two sequenced FromToByAction animations: a fast move that overshoots, then a settle-back.
-    static func animateLightMove(_ light: Entity, to target: SIMD3<Float>) {
+    /// Returns the total animation duration in seconds.
+    @discardableResult
+    static func animateLightMove(_ light: Entity, to target: SIMD3<Float>) -> TimeInterval {
         light.stopAllAnimations()
 
         let currentTransform = light.transform
@@ -161,12 +233,13 @@ struct ImmersiveView: View {
             for: settleAction,
             duration: settleDuration,
             bindTarget: .transform
-        ) else { return }
+        ) else { return 0 }
 
         let sequence = try? AnimationResource.sequence(with: [moveAnimation, settleAnimation])
-        guard let sequence else { return }
+        guard let sequence else { return 0 }
 
         light.playAnimation(sequence)
+        return moveDuration + settleDuration
     }
 
 }
