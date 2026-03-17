@@ -104,9 +104,69 @@ struct ImmersiveView: View {
             .targetedToAnyEntity()
             .onEnded { value in
                 if let pointLight = self.pointLight {
-                    pointLight.position = value.entity.position
+                    let targetPosition = value.entity.position
+                    Self.animateLightMove(pointLight, to: targetPosition)
                 }
             }
+    }
+
+    /// Animates the point light from its current position to the target with a bounce at the end.
+    /// Uses two sequenced FromToByAction animations: a fast move that overshoots, then a settle-back.
+    static func animateLightMove(_ light: Entity, to target: SIMD3<Float>) {
+        light.stopAllAnimations()
+
+        let currentTransform = light.transform
+        let direction = target - currentTransform.translation
+        let distance = length(direction)
+
+        // Overshoot by a small amount of the travel distance along the movement direction
+        let overshootFraction: Float = 0.05
+        let overshootPosition = target + normalize(direction) * (distance * overshootFraction)
+
+        let overshootTransform = Transform(
+            scale: currentTransform.scale,
+            rotation: currentTransform.rotation,
+            translation: overshootPosition
+        )
+        let finalTransform = Transform(
+            scale: currentTransform.scale,
+            rotation: currentTransform.rotation,
+            translation: target
+        )
+
+        // Phase 1: Quick move from current position to overshoot point
+        let moveAction = FromToByAction<Transform>(
+            from: currentTransform,
+            to: overshootTransform,
+            timing: .easeIn,
+            isAdditive: false
+        )
+        let moveDuration: TimeInterval = 0.25
+
+        // Phase 2: Settle back from overshoot to final position
+        let settleAction = FromToByAction<Transform>(
+            from: overshootTransform,
+            to: finalTransform,
+            timing: .easeOut,
+            isAdditive: false
+        )
+        let settleDuration: TimeInterval = 0.15
+
+        guard let moveAnimation = try? AnimationResource.makeActionAnimation(
+            for: moveAction,
+            duration: moveDuration,
+            bindTarget: .transform
+        ),
+        let settleAnimation = try? AnimationResource.makeActionAnimation(
+            for: settleAction,
+            duration: settleDuration,
+            bindTarget: .transform
+        ) else { return }
+
+        let sequence = try? AnimationResource.sequence(with: [moveAnimation, settleAnimation])
+        guard let sequence else { return }
+
+        light.playAnimation(sequence)
     }
 
 }
