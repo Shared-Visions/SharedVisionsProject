@@ -31,6 +31,8 @@ struct ImmersiveView: View {
                 self.pointLight = pointLight
                 self.sceneRoot = scene
 
+                glassSphere.components.set(HoverEffectComponent())
+
                 let positions = Self.generateSpherePositions(count: appModel.sphereCount)
                 for position in positions {
                     let clone = glassSphere.clone(recursive: true)
@@ -189,11 +191,10 @@ struct ImmersiveView: View {
 
         let currentTransform = light.transform
         let direction = target - currentTransform.translation
-        let distance = length(direction)
 
-        // Overshoot by a small amount of the travel distance along the movement direction
-        let overshootFraction: Float = 0.05
-        let overshootPosition = target + normalize(direction) * (distance * overshootFraction)
+        // Fixed overshoot distance so the bounce stays within the sphere regardless of travel distance
+        let overshootDistance: Float = 0.06
+        let overshootPosition = target + normalize(direction) * overshootDistance
 
         let overshootTransform = Transform(
             scale: currentTransform.scale,
