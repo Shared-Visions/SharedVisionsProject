@@ -36,32 +36,17 @@ struct PlayerView: View {
                         .lineLimit(1)
                 }
 
-                // THE button. Opens the space and plays the loaded
-                // document's default sequence; the in-space control bar
-                // takes it from there.
-                Button {
-                    Task {
-                        await appModel.playDefaultSequence()
-                        if appModel.loadedExperience == nil {
-                            await appModel.transitionToPhase("immersive")
-                        }
-                    }
-                } label: {
-                    Label("Enter Player", systemImage: "play.fill")
-                        .font(.headline)
-                        .frame(maxWidth: 300)
-                        .padding(.vertical, 12)
-                }
-                .buttonStyle(.borderedProminent)
-                .disabled(appModel.immersiveSpaceState != .closed)
-
+                // Opening a project (or connecting live) enters the
+                // player directly — no separate launch step.
                 HStack(spacing: 14) {
                     Button {
                         showingFileImporter = true
                     } label: {
                         Label("Open Project…", systemImage: "folder")
+                            .font(.headline)
+                            .padding(.vertical, 6)
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.borderedProminent)
 
                     LiveModeView()
                 }

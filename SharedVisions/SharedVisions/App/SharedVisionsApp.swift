@@ -11,6 +11,9 @@ import ChapterPlayer
 @main
 struct SharedVisionsApp: App {
 
+    @Environment(\.openWindow) private var openWindow
+    @Environment(\.dismissWindow) private var dismissWindow
+
     @State private var appModel = AppModel()
     @State private var playerModel = PlayerModel()
     /// Mirror of `playerModel.immersionStyle` for the chapter space's
@@ -63,8 +66,15 @@ struct SharedVisionsApp: App {
                 .onAppear {
                     playerModel.immersiveSpaceState = .open
                     chapterImmersion = playerModel.immersionStyle
+                    // The player IS the app while the space is up — the
+                    // launcher window gets out of the way and returns
+                    // when the session ends.
+                    dismissWindow(id: appModel.mainWindowID)
                 }
-                .onDisappear { playerModel.immersiveSpaceState = .closed }
+                .onDisappear {
+                    playerModel.immersiveSpaceState = .closed
+                    openWindow(id: appModel.mainWindowID)
+                }
                 .onChange(of: playerModel.immersionRevision) {
                     chapterImmersion = playerModel.immersionStyle
                 }
