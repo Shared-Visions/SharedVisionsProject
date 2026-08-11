@@ -61,12 +61,9 @@ struct PlayerView: View {
             allowsMultipleSelection: false
         ) { result in
             if case .success(let urls) = result, let url = urls.first {
-                Task {
-                    let accessing = url.startAccessingSecurityScopedResource()
-                    defer { if accessing { url.stopAccessingSecurityScopedResource() } }
-                    await appModel.transitionToPhase("immersive")
-                    await appModel.loadAndPlayLocalExperience(at: url)
-                }
+                // Scope lifetime is owned by PlayerModel for the whole
+                // session — playback streams bundle media lazily.
+                Task { await appModel.openLocalBundle(url) }
             }
         }
     }
