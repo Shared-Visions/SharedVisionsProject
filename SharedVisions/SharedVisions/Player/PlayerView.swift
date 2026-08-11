@@ -351,7 +351,15 @@ struct PlayerView: View {
             }
             .buttonStyle(TransportButtonStyle(variant: .secondary, size: 46))
 
-            Button { engine.togglePause() } label: {
+            Button {
+                if engine.isPlaying {
+                    engine.togglePause()
+                } else {
+                    // Stopped (fresh load or completed run) — restart the
+                    // default sequence rather than silently doing nothing.
+                    Task { await appModel.playDefaultSequence() }
+                }
+            } label: {
                 Image(systemName: isPlayingForward ? "pause.fill" : "play.fill")
                     // Nudge the play triangle right a hair so it reads centered.
                     .offset(x: isPlayingForward ? 0 : 2)
@@ -388,12 +396,14 @@ struct PlayerView: View {
                     Task { await appModel.transitionToPhase("idle") }
                 } else {
                     Task {
-                        await appModel.transitionToPhase("immersive")
-                        // No bundled fallback — if no experience is
-                        // loaded, the immersive space opens empty and
-                        // the author is expected to use the Live menu
-                        // (LAN connect to Maestro) or the main window's
-                        // "Open Project" button.
+                        // Auto-plays the loaded document's default
+                        // sequence once the space is up. With nothing
+                        // loaded the space opens empty and the author
+                        // uses Live or Open Project.
+                        await appModel.playDefaultSequence()
+                        if appModel.loadedExperience == nil {
+                            await appModel.transitionToPhase("immersive")
+                        }
                     }
                 }
             } label: {

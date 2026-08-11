@@ -228,3 +228,22 @@ extension PlayerModel {
         }
     }
 }
+
+extension PlayerModel {
+
+    /// Play (or REPLAY) the loaded document's default sequence — the
+    /// transport's launch/play path. After a sequence completes the
+    /// engine is stopped with no active sequence, so "press play again"
+    /// must resolve a sequence from the document rather than poking the
+    /// stopped engine. Opens the immersive space first when needed.
+    func playDefaultSequence() async {
+        guard let document = loadedExperience?.document else { return }
+        let id = document.defaultSequenceId ?? document.sequences.first?.id
+        guard let id, let sequence = sequenceFromLoadedDocument(id: id) else { return }
+        if immersiveSpaceState == .closed {
+            await transitionToPhase("immersive")
+        }
+        guard immersiveSpaceState == .open else { return }
+        await playSequence(sequence)
+    }
+}
