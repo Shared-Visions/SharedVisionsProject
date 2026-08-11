@@ -19,6 +19,9 @@ struct MainTabView: View {
             Tab("Library", systemImage: "books.vertical") {
                 LibraryView()
             }
+            Tab("Player", systemImage: "play.rectangle.on.rectangle") {
+                PlayerView()
+            }
             Tab("About", systemImage: "info.circle") {
                 AboutView()
             }

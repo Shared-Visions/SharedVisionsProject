@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		742CFC2B2F5B0E460016D54C /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = 742CFC2A2F5B0E460016D54C /* RealityKitContent */; };
+		C5A87E1100000000000000A2 /* ChapterScript in Frameworks */ = {isa = PBXBuildFile; productRef = C5A87E1100000000000000A3 /* ChapterScript */; };
+		C5A87E1200000000000000A2 /* ChapterPlayer in Frameworks */ = {isa = PBXBuildFile; productRef = C5A87E1200000000000000A3 /* ChapterPlayer */; };
 		FA4D919E2F68A53A0068640D /* SampleCode.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = FA4D919C2F68A53A0068640D /* SampleCode.xcconfig */; };
 /* End PBXBuildFile section */
 
@@ -44,6 +46,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				742CFC2B2F5B0E460016D54C /* RealityKitContent in Frameworks */,
+				C5A87E1100000000000000A2 /* ChapterScript in Frameworks */,
+				C5A87E1200000000000000A2 /* ChapterPlayer in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -134,6 +138,10 @@
 			);
 			mainGroup = 742CFC1C2F5B0E450016D54C;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				C5A87E1100000000000000A1 /* XCRemoteSwiftPackageReference "ChapterScript" */,
+				C5A87E1200000000000000A1 /* XCRemoteSwiftPackageReference "ChapterPlayer" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 742CFC262F5B0E450016D54C /* Products */;
 			projectDirPath = "";
@@ -173,7 +181,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 9YZ66NTGZG;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
@@ -202,7 +210,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 9YZ66NTGZG;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
@@ -368,10 +376,39 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		C5A87E1100000000000000A1 /* XCRemoteSwiftPackageReference "ChapterScript" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mike-bundy/ChapterScript.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		C5A87E1200000000000000A1 /* XCRemoteSwiftPackageReference "ChapterPlayer" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mike-bundy/ChapterPlayer.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		742CFC2A2F5B0E460016D54C /* RealityKitContent */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RealityKitContent;
+		};
+		C5A87E1100000000000000A3 /* ChapterScript */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C5A87E1100000000000000A1 /* XCRemoteSwiftPackageReference "ChapterScript" */;
+			productName = ChapterScript;
+		};
+		C5A87E1200000000000000A3 /* ChapterPlayer */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C5A87E1200000000000000A1 /* XCRemoteSwiftPackageReference "ChapterPlayer" */;
+			productName = ChapterPlayer;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
