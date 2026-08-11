@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		742CFC2B2F5B0E460016D54C /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = 742CFC2A2F5B0E460016D54C /* RealityKitContent */; };
+		C5A87E1100000000000000A2 /* ChapterScript in Frameworks */ = {isa = PBXBuildFile; productRef = C5A87E1100000000000000A3 /* ChapterScript */; };
+		C5A87E1200000000000000A2 /* ChapterPlayer in Frameworks */ = {isa = PBXBuildFile; productRef = C5A87E1200000000000000A3 /* ChapterPlayer */; };
 		FA4D919E2F68A53A0068640D /* SampleCode.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = FA4D919C2F68A53A0068640D /* SampleCode.xcconfig */; };
 /* End PBXBuildFile section */
 
@@ -44,6 +46,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				742CFC2B2F5B0E460016D54C /* RealityKitContent in Frameworks */,
+				C5A87E1100000000000000A2 /* ChapterScript in Frameworks */,
+				C5A87E1200000000000000A2 /* ChapterPlayer in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -134,6 +138,10 @@
 			);
 			mainGroup = 742CFC1C2F5B0E450016D54C;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				C5A87E1100000000000000A1 /* XCLocalSwiftPackageReference "../../ChapterScript" */,
+				C5A87E1200000000000000A1 /* XCLocalSwiftPackageReference "../../ChapterPlayer" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 742CFC262F5B0E450016D54C /* Products */;
 			projectDirPath = "";
@@ -368,10 +376,31 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		C5A87E1100000000000000A1 /* XCLocalSwiftPackageReference "../../ChapterScript" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../ChapterScript;
+		};
+		C5A87E1200000000000000A1 /* XCLocalSwiftPackageReference "../../ChapterPlayer" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../ChapterPlayer;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		742CFC2A2F5B0E460016D54C /* RealityKitContent */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RealityKitContent;
+		};
+		C5A87E1100000000000000A3 /* ChapterScript */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C5A87E1100000000000000A1 /* XCLocalSwiftPackageReference "../../ChapterScript" */;
+			productName = ChapterScript;
+		};
+		C5A87E1200000000000000A3 /* ChapterPlayer */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C5A87E1200000000000000A1 /* XCLocalSwiftPackageReference "../../ChapterPlayer" */;
+			productName = ChapterPlayer;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
