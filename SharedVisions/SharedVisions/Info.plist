@@ -19,5 +19,13 @@
 			</array>
 		</dict>
 	</dict>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>SharedVisions discovers MaestroStudio on the local network so an editor on a Mac can push experience edits to this Vision Pro for live iteration.</string>
+	<key>NSWorldSensingUsageDescription</key>
+	<string>SharedVisions uses head tracking to anchor a sequence's scene to where you are when it starts, so authored placements appear relative to your viewpoint.</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_maestro._tcp</string>
+	</array>
 </dict>
 </plist>

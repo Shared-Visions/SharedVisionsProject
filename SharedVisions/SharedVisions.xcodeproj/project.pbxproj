@@ -139,8 +139,8 @@
 			mainGroup = 742CFC1C2F5B0E450016D54C;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				C5A87E1100000000000000A1 /* XCLocalSwiftPackageReference "../../ChapterScript" */,
-				C5A87E1200000000000000A1 /* XCLocalSwiftPackageReference "../../ChapterPlayer" */,
+				C5A87E1100000000000000A1 /* XCRemoteSwiftPackageReference "ChapterScript" */,
+				C5A87E1200000000000000A1 /* XCRemoteSwiftPackageReference "ChapterPlayer" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 742CFC262F5B0E450016D54C /* Products */;
@@ -376,16 +376,24 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		C5A87E1100000000000000A1 /* XCLocalSwiftPackageReference "../../ChapterScript" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../ChapterScript;
+/* Begin XCRemoteSwiftPackageReference section */
+		C5A87E1100000000000000A1 /* XCRemoteSwiftPackageReference "ChapterScript" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mike-bundy/ChapterScript.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
 		};
-		C5A87E1200000000000000A1 /* XCLocalSwiftPackageReference "../../ChapterPlayer" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../ChapterPlayer;
+		C5A87E1200000000000000A1 /* XCRemoteSwiftPackageReference "ChapterPlayer" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mike-bundy/ChapterPlayer.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
 		};
-/* End XCLocalSwiftPackageReference section */
+/* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		742CFC2A2F5B0E460016D54C /* RealityKitContent */ = {
@@ -394,12 +402,12 @@
 		};
 		C5A87E1100000000000000A3 /* ChapterScript */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C5A87E1100000000000000A1 /* XCLocalSwiftPackageReference "../../ChapterScript" */;
+			package = C5A87E1100000000000000A1 /* XCRemoteSwiftPackageReference "ChapterScript" */;
 			productName = ChapterScript;
 		};
 		C5A87E1200000000000000A3 /* ChapterPlayer */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C5A87E1200000000000000A1 /* XCLocalSwiftPackageReference "../../ChapterPlayer" */;
+			package = C5A87E1200000000000000A1 /* XCRemoteSwiftPackageReference "ChapterPlayer" */;
 			productName = ChapterPlayer;
 		};
 /* End XCSwiftPackageProductDependency section */
