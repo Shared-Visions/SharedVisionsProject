@@ -1,24 +1,24 @@
 {
-  "originHash" : "92149040902a85d0de13387b3c2f314578ca8eea2ee35e00c9eec7e088949fd1",
-  "pins" : [
+  "originHash": "92149040902a85d0de13387b3c2f314578ca8eea2ee35e00c9eec7e088949fd1",
+  "pins": [
     {
-      "identity" : "chapterplayer",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/mike-bundy/ChapterPlayer.git",
-      "state" : {
-        "branch" : "main",
-        "revision" : "9216c62d07a515a6390edcc2fe52070621f8e33b"
+      "identity": "chapterplayer",
+      "kind": "remoteSourceControl",
+      "location": "https://github.com/mike-bundy/ChapterPlayer.git",
+      "state": {
+        "branch": "main",
+        "revision": "69b5d8ede1066b50306c74d4c72d69c671b2399f"
       }
     },
     {
-      "identity" : "chapterscript",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/mike-bundy/ChapterScript.git",
-      "state" : {
-        "branch" : "main",
-        "revision" : "ecd9a1fa2aabf02458b44113103373b44e1da4e9"
+      "identity": "chapterscript",
+      "kind": "remoteSourceControl",
+      "location": "https://github.com/mike-bundy/ChapterScript.git",
+      "state": {
+        "branch": "main",
+        "revision": "ecd9a1fa2aabf02458b44113103373b44e1da4e9"
       }
     }
   ],
-  "version" : 3
+  "version": 3
 }
