@@ -38,6 +38,11 @@ struct PlayerControlBar: View {
         let total = sequence?.totalDuration ?? 0
         let elapsed = engine.isPlaying || engine.isPaused ? min(engine.totalElapsed, total) : 0
 
+        // Held at the end (onComplete = holdOnLastStep keeps the engine
+        // "playing" parked on the last frame) — play must RESTART, not
+        // toggle pause on a finished run.
+        let atEnd = engine.isPlaying && total > 0 && engine.totalElapsed >= total - 0.05
+
         VStack(alignment: .leading, spacing: 14) {
             // ── Time + title
             HStack(spacing: 10) {
@@ -57,17 +62,29 @@ struct PlayerControlBar: View {
 
             // ── Transport + utilities
             HStack(spacing: 30) {
-                Button { engine.previous() } label: {
+                Button {
+                    // System-player semantics: mid-step (or at the first
+                    // step) restarts the CURRENT step; near a step start
+                    // goes to the previous one. Works from the held-at-end
+                    // state too — jumpToStep rebuilds the play task.
+                    if engine.currentStepIndex == 0 || engine.stepElapsed > 2 || atEnd {
+                        engine.jumpToStep(index: atEnd ? 0 : engine.currentStepIndex)
+                    } else {
+                        engine.previous()
+                    }
+                } label: {
                     Image(systemName: "backward.end.fill")
                 }
                 Button {
-                    if engine.isPlaying {
+                    if atEnd {
+                        engine.restart()
+                    } else if engine.isPlaying {
                         engine.togglePause()
                     } else {
                         Task { await appModel.playDefaultSequence() }
                     }
                 } label: {
-                    Image(systemName: engine.isPlaying && !engine.isPaused ? "pause.fill" : "play.fill")
+                    Image(systemName: engine.isPlaying && !engine.isPaused && !atEnd ? "pause.fill" : "play.fill")
                         .font(.system(size: 24, weight: .bold))
                         .frame(width: 30)
                 }
