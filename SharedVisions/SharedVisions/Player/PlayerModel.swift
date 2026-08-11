@@ -11,6 +11,8 @@
 
 import Foundation
 import SwiftUI
+import AVFoundation
+import ChapterScript
 import ChapterPlayer
 
 @MainActor
@@ -47,6 +49,30 @@ final class PlayerModel: ChapterPlayerCore {
         openBundleURL = url
         await transitionToPhase("immersive")
         await loadAndPlayLocalExperience(at: url)
+    }
+
+    // MARK: - Mute
+
+    /// One switch for everything audible: the spatial audio mix bus and
+    /// every video channel's AVPlayer referenced by the loaded document.
+    private(set) var isMuted = false
+
+    func toggleMuted() {
+        isMuted.toggle()
+        audioManager.isMuted = isMuted
+        guard let document = loadedExperience?.document else { return }
+        var channels: Set<String> = [Self.backdropVideoChannel]
+        for sequence in document.sequences {
+            for step in sequence.steps {
+                for action in step.actions + step.scheduledActions.map(\.action) {
+                    if case .playVideo(let dto) = action { channels.insert(dto.channel) }
+                    if case .prepareVideo(let dto) = action { channels.insert(dto.channel) }
+                }
+            }
+        }
+        for channel in channels {
+            videoManager.player(for: channel)?.isMuted = isMuted
+        }
     }
 
     private func releaseBundleScope() {

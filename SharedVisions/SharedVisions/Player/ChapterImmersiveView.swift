@@ -38,7 +38,7 @@ struct ChapterImmersiveView: View {
     @State private var motionDriver: EventSubscription?
 
     var body: some View {
-        RealityView { content in
+        RealityView { content, attachments in
             await appModel.assetPreloader.preloadAll()
 
             let root = Entity()
@@ -71,6 +71,20 @@ struct ChapterImmersiveView: View {
             // animateMotion curves between steps.
             motionDriver = content.subscribe(to: SceneEvents.Update.self) { _ in
                 drivePerFrameMotion()
+            }
+
+            // Player controls: parented under the scene root so the
+            // eye-height rebase carries them too — they settle slightly
+            // below sightline, 1.2 m out, like the system player bar.
+            if let bar = attachments.entity(for: "controls") {
+                bar.position = SIMD3<Float>(0, -0.45, -1.2)
+                root.addChild(bar)
+            }
+        } update: { _, _ in
+        } attachments: {
+            Attachment(id: "controls") {
+                PlayerControlBar()
+                    .environment(appModel)
             }
         }
         .onDisappear {
