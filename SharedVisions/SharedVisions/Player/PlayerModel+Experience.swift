@@ -33,19 +33,19 @@ extension PlayerModel {
                 ?? loaded.document.defaultSequenceId
                 ?? loaded.document.sequences.first?.id
             guard let id = resolvedId else {
-                experienceLogger.error("Loaded experience '\(loaded.document.id)' has no segments.")
+                experienceLogger.error("Loaded experience '\(loaded.document.id)' has no sequences.")
                 return
             }
             guard let dto = loaded.document.sequences.first(where: { $0.id == id }) else { return }
-            let segment = try SequenceDefinition(dto: dto)
+            let sequence = try SequenceDefinition(dto: dto)
             experienceLogger.info(
-                "Loaded experience '\(loaded.document.id)' from '\(url.lastPathComponent)' (\(loaded.document.sequences.count) segments); starting at '\(segment.id)' (\(segment.steps.count) steps, \(segment.totalDuration)s)"
+                "Loaded experience '\(loaded.document.id)' from '\(url.lastPathComponent)' (\(loaded.document.sequences.count) sequences); starting at '\(sequence.id)' (\(sequence.segments.count) segments, \(sequence.totalDuration)s)"
             )
             loadedExperience = loaded
             audioManager.mediaResolver = loaded.mediaResolver
             videoManager.mediaResolver = loaded.mediaResolver
             documentEntities.materialize(document: loaded.document, sceneRoot: immersiveSceneRoot, mediaResolver: loaded.mediaResolver)
-            await playSequence(segment)
+            await playSequence(sequence)
         } catch {
             experienceLogger.error("Failed to load experience at '\(url.lastPathComponent)': \(String(describing: error))")
         }
@@ -136,9 +136,9 @@ extension PlayerModel {
     ) async {
         var seen = Set<String>()
         var actions: [VideoAction] = []
-        for segment in document.sequences {
-            for step in segment.steps {
-                for action in step.actions + step.scheduledActions.map(\.action) {
+        for sequence in document.sequences {
+            for segment in sequence.segments {
+                for action in segment.actions + segment.scheduledActions.map(\.action) {
                     if case .playVideo(let dto) = action, !seen.contains(dto.channel) {
                         seen.insert(dto.channel)
                         actions.append(VideoAction(dto))

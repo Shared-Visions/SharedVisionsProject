@@ -32,8 +32,8 @@ struct ChapterImmersiveView: View {
 
     /// Per-frame animation driver. RealityView's `update:` closure only
     /// runs on view re-renders — during steady playback nothing observable
-    /// changes per frame (step state changes only at step boundaries), so
-    /// motion sampling there effectively froze between steps. A
+    /// changes per frame (Segment state changes only at Segment boundaries), so
+    /// motion sampling there effectively froze between Segments. A
     /// SceneEvents.Update subscription fires every render frame.
     @State private var motionDriver: EventSubscription?
 
@@ -66,9 +66,9 @@ struct ChapterImmersiveView: View {
             immersiveLogger.info("[setup] skybox entity registered. registry keys: \(appModel.videoManager.videoEntityRegistry.keys.sorted())")
 
             // Drive per-frame motion from the render loop — the update:
-            // closure only fires when SwiftUI re-renders (once per step
+            // closure only fires when SwiftUI re-renders (once per Segment
             // during steady playback), which froze segment-track and
-            // animateMotion curves between steps.
+            // animateMotion curves between Segments.
             motionDriver = content.subscribe(to: SceneEvents.Update.self) { _ in
                 drivePerFrameMotion()
             }
@@ -123,17 +123,17 @@ struct ChapterImmersiveView: View {
     // MARK: - Per-frame continuous motion
 
     /// Per-frame motion is fully data-driven: any `.animateMotion` action that ran at
-    /// step start populated `entityExecutor.activeMotions`; here we ask the executor
-    /// to evaluate each curve against the engine's current step / total elapsed time
+    /// Segment start populated `entityExecutor.activeMotions`; here we ask the executor
+    /// to evaluate each curve against the engine's current Segment / total elapsed time
     /// and write the resulting transforms onto live entities.
     ///
-    /// The previous step-id switch with hand-tuned trigonometry is gone. Curves are
+    /// The previous Segment-id switch with hand-tuned trigonometry is gone. Curves are
     /// authored declaratively in the experience JSON via `MotionCurve` sum-types.
     @MainActor
     private func drivePerFrameMotion() {
         let engine = appModel.sequenceEngine
         appModel.entityExecutor.applyActiveMotions(
-            stepElapsed: engine.stepElapsed,
+            segmentElapsed: engine.segmentElapsed,
             totalElapsed: engine.totalElapsed
         )
     }

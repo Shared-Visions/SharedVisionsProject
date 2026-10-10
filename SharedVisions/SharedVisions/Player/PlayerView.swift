@@ -37,7 +37,7 @@ struct PlayerView: View {
                 }
 
                 // Opening a project (or connecting live) enters the
-                // player directly — no separate launch step.
+                // player directly — no separate launch screen.
                 HStack(spacing: 14) {
                     Button {
                         showingFileImporter = true

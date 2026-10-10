@@ -5,7 +5,7 @@
 //  System-video-player-style control bar, shown ONLY inside the
 //  immersive space (mounted as a RealityView attachment by
 //  ChapterImmersiveView). Layout mirrors the visionOS media player:
-//  elapsed/total + title, a scrub bar with step-boundary dots, then
+//  elapsed/total + title, a scrub bar with Segment-boundary dots, then
 //  transport on the left and volume / captions / settings on the right.
 //
 
@@ -38,7 +38,7 @@ struct PlayerControlBar: View {
         let total = sequence?.totalDuration ?? 0
         let elapsed = engine.isPlaying || engine.isPaused ? min(engine.totalElapsed, total) : 0
 
-        // Held at the end (onComplete = holdOnLastStep keeps the engine
+        // Held at the end (onComplete = holdOnLastSegment keeps the engine
         // "playing" parked on the last frame) — play must RESTART, not
         // toggle pause on a finished run.
         let atEnd = engine.isPlaying && total > 0 && engine.totalElapsed >= total - 0.05
@@ -57,18 +57,18 @@ struct PlayerControlBar: View {
                 Spacer(minLength: 0)
             }
 
-            // ── Scrub bar with step-boundary dots
+            // ── Scrub bar with Segment-boundary dots
             scrubBar(sequence: sequence, total: total, elapsed: elapsed)
 
             // ── Transport + utilities
             HStack(spacing: 30) {
                 Button {
-                    // System-player semantics: mid-step (or at the first
-                    // step) restarts the CURRENT step; near a step start
+                    // System-player semantics: mid-Segment (or at the first
+                    // Segment) restarts the CURRENT Segment; near a Segment start
                     // goes to the previous one. Works from the held-at-end
-                    // state too — jumpToStep rebuilds the play task.
-                    if engine.currentStepIndex == 0 || engine.stepElapsed > 2 || atEnd {
-                        engine.jumpToStep(index: atEnd ? 0 : engine.currentStepIndex)
+                    // state too — jumpToSegment rebuilds the play task.
+                    if engine.currentSegmentIndex == 0 || engine.segmentElapsed > 2 || atEnd {
+                        engine.jumpToSegment(index: atEnd ? 0 : engine.currentSegmentIndex)
                     } else {
                         engine.previous()
                     }
@@ -141,8 +141,8 @@ struct PlayerControlBar: View {
                     .frame(height: 5)
                 Capsule().fill(.white)
                     .frame(width: max(5, width * fraction), height: 5)
-                // Step-boundary dots — the system player's chapter marks.
-                ForEach(stepFractions(sequence: sequence, total: total), id: \.self) { f in
+                // Segment-boundary dots — the system player's chapter marks.
+                ForEach(segmentFractions(sequence: sequence, total: total), id: \.self) { f in
                     Circle()
                         .fill(.white.opacity(f <= fraction ? 1 : 0.55))
                         .frame(width: 7, height: 7)
@@ -165,31 +165,31 @@ struct PlayerControlBar: View {
         .frame(height: 20)
     }
 
-    /// Snap a released scrub to the step containing that time.
+    /// Snap a released scrub to the Segment containing that time.
     private func seek(toFraction f: Double, sequence: SequenceDefinition?, total: TimeInterval) {
         guard let sequence, total > 0 else { return }
         let target = f * total
         var cursor: TimeInterval = 0
-        for (index, step) in sequence.steps.enumerated() {
-            if target < cursor + step.duration || index == sequence.steps.count - 1 {
+        for (index, segment) in sequence.segments.enumerated() {
+            if target < cursor + segment.duration || index == sequence.segments.count - 1 {
                 let engine = appModel.sequenceEngine
                 if engine.currentSequence?.id == sequence.id, engine.isPlaying {
-                    engine.jumpToStep(index: index)
+                    engine.jumpToSegment(index: index)
                 } else {
-                    engine.play(sequence: sequence, startingAtStepIndex: index)
+                    engine.play(sequence: sequence, startingAtSegmentIndex: index)
                 }
                 return
             }
-            cursor += step.duration
+            cursor += segment.duration
         }
     }
 
-    private func stepFractions(sequence: SequenceDefinition?, total: TimeInterval) -> [Double] {
-        guard let sequence, total > 0, sequence.steps.count > 1 else { return [] }
+    private func segmentFractions(sequence: SequenceDefinition?, total: TimeInterval) -> [Double] {
+        guard let sequence, total > 0, sequence.segments.count > 1 else { return [] }
         var fractions: [Double] = []
         var cursor: TimeInterval = 0
-        for step in sequence.steps.dropLast() {
-            cursor += step.duration
+        for segment in sequence.segments.dropLast() {
+            cursor += segment.duration
             fractions.append(cursor / total)
         }
         return fractions

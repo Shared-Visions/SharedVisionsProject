@@ -28,7 +28,7 @@ final class PlayerModel: ChapterPlayerCore {
     /// `startAccessingSecurityScopedResource` is balanced open — and
     /// playback reads media lazily (AVPlayer streams `assets/*` files
     /// continuously), so releasing the scope after load meant every
-    /// video resolved to nil at step time ("file not found" with the
+    /// video resolved to nil at Segment time ("file not found" with the
     /// file right there). Scope is released only when another bundle
     /// replaces it.
     private(set) var openBundleURL: URL?
@@ -63,8 +63,8 @@ final class PlayerModel: ChapterPlayerCore {
         guard let document = loadedExperience?.document else { return }
         var channels: Set<String> = [Self.backdropVideoChannel]
         for sequence in document.sequences {
-            for step in sequence.steps {
-                for action in step.actions + step.scheduledActions.map(\.action) {
+            for segment in sequence.segments {
+                for action in segment.actions + segment.scheduledActions.map(\.action) {
                     if case .playVideo(let dto) = action { channels.insert(dto.channel) }
                     if case .prepareVideo(let dto) = action { channels.insert(dto.channel) }
                 }
